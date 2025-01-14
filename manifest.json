@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Active Yuwa",
+  "version": "0.1.0",
+  "description": "Ask Buddie extension to improve the post reach.",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}
