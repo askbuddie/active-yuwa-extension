@@ -5,9 +5,7 @@
   "description": "Ask Buddie extension to improve the post reach.",
   "permissions": ["scripting", "activeTab", "storage"],
   "host_permissions": [
-    "https://www.facebook.com/*",
-    "https://m.facebook.com/*",
-    "https://web.facebook.com/*"
+    "https://*.facebook.com/groups/askbuddie/*"
   ],
   "action": {
     "default_popup": "index.html"
