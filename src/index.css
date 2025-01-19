@@ -2,10 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-body.dark-mode {
-  @apply bg-gray-900 text-white;
+@layer base {
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
 }

@@ -1,25 +1,13 @@
 import React from 'react';
-import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { useDarkMode } from '../App';
+import ThemeToggleButton from '../ui/ThemeToggleButton';
 
 const Navbar: React.FC = () => {
-  const { darkMode, toggleDarkMode } = useDarkMode();
-
   return (
-    <nav className="flex justify-between items-center p-4">
+    <nav className="flex justify-between items-center p-4 bg-white dark:bg-gray-800 text-black dark:text-white">
       <h1 className="text-3xl font-bold transition-colors duration-300 ease-in-out">
         Active Yuwa Extension
       </h1>
-      <button
-        onClick={toggleDarkMode}
-        className="p-2 transition-colors duration-300 ease-in-out"
-      >
-        {darkMode ? (
-          <MdLightMode size={24} className="text-white" />
-        ) : (
-          <MdDarkMode size={24} className="text-gray-900" />
-        )}
-      </button>
+      <ThemeToggleButton />
     </nav>
   );
 };
