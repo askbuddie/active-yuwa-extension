@@ -74,14 +74,15 @@ function fetchLowCommentPosts() {
 
 function leaveComment(posinset) {
   const post = document.querySelector(`[aria-posinset='${posinset}']`);
-  if (post) {
-    const commentButton = post.querySelector("[aria-label='Leave a comment']");
-    if (commentButton) {
-      commentButton.click();
-    } else {
-      console.error('Comment button not found for posinset:', posinset);
-    }
+  if (!post) {
+    console.error('Post not found: ', posinset);
+    return;
+  }
+
+  const commentButton = post.querySelector("[aria-label='Leave a comment']");
+  if (commentButton) {
+    commentButton.click();
   } else {
-    console.error('Post not found for posinset:', posinset);
+    console.error('Comment button not found: ', posinset);
   }
 }
