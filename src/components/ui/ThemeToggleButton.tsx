@@ -1,6 +1,6 @@
 import React from 'react';
 import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { useDarkMode } from '../contexts/DarkModeContext';
+import { useDarkMode } from '../../providers/DarkModeProvider';
 
 const ThemeToggleButton: React.FC = () => {
   const { darkMode, toggleDarkMode } = useDarkMode();

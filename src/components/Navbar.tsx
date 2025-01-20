@@ -1,5 +1,5 @@
 import React from 'react';
-import ThemeToggleButton from '../ui/ThemeToggleButton';
+import ThemeToggleButton from './ui/ThemeToggleButton';
 
 const Navbar: React.FC = () => {
   return (

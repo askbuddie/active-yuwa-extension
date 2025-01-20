@@ -1,5 +1,5 @@
 import Navbar from './components/Navbar';
-import { DarkModeProvider } from './contexts/DarkModeContext';
+import { DarkModeProvider } from './providers/DarkModeProvider';
 
 function App() {
   return (
