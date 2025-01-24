@@ -4,10 +4,14 @@
   "version": "0.1.0",
   "description": "Ask Buddie extension to improve the post reach.",
   "permissions": ["scripting", "activeTab", "storage"],
-  "host_permissions": [
-    "https://*.facebook.com/*"
-  ],
+  "host_permissions": ["https://*.facebook.com/*"],
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.facebook.com/*"],
+      "js": ["src/content"]
+    }
+  ]
 }
