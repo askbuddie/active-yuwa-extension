@@ -9,5 +9,11 @@
   ],
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.facebook.com/*"],
+      "js": ["src/content-script.ts"]
+    } 
+  ]
 }
