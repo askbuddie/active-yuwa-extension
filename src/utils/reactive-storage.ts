@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 type ReactiveStorage<T> = [T, (val: Partial<T>) => void];
 
-export const createReactiveStorage = <T extends object>(name: string, initialValue: T): ReactiveStorage<T> => {
+export const createReactiveStorage = <T>(name: string, initialValue: T): ReactiveStorage<T> => {
 
     const [value, setValue] = useState<T>(initialValue);
 
