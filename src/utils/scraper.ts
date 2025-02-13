@@ -19,7 +19,9 @@ export type Post = {
 
 export const fetchPosts = (document: Document, settings: Settings): Post[] => {
 
-    const articles: NodeListOf<HTMLDivElement> = document.querySelectorAll('[role="article"]');
+    const { postSelector } = settings;
+
+    const articles: NodeListOf<HTMLDivElement> = document.querySelectorAll(postSelector);
 
     return Array.from(articles).map((article: HTMLDivElement) => extractPost(article, settings));
 }
