@@ -4,36 +4,42 @@ import { Pill } from "./components/pill";
 import { Settings } from "./components/settings";
 import { Posts } from "./components/posts";
 import { ErrorBoundary } from "./components/error-boundary";
+import { DarkModeProvider } from "./providers/DarkModeProvider";
+import ThemeToggleButton from "./components/ui/ThemeToggleButton";
 
 function App() {
 
     const [activeTab, setActiveTab] = useState<'posts' | 'settings'>('posts');
 
     return (
-        <div className="w-[640px] flex flex-col gap-4 p-4">
-            <Header />
+        <DarkModeProvider>
+            <div className="w-[640px] flex flex-col gap-4 p-4">
+                <Header />
 
-            <div className="flex flex-row gap-4 bg-gray-100 p-2 rounded-full">
-                <Pill active={activeTab === 'posts'} onClick={() => setActiveTab('posts')}>Posts</Pill>
-                <Pill active={activeTab === 'settings'} onClick={() => setActiveTab('settings')}>Settings</Pill>
-            </div>
+                <div className="flex flex-row gap-4 bg-gray-100 dark:bg-neutral-700 p-2 rounded-full justify-between items-centers">
+                    <div className="flex flex-row gap-4">
+                        <Pill active={activeTab === 'posts'} onClick={() => setActiveTab('posts')}>Posts</Pill>
+                        <Pill active={activeTab === 'settings'} onClick={() => setActiveTab('settings')}>Settings</Pill>
+                    </div>
 
+                    <ThemeToggleButton />
+                </div>
 
-            <div className="px-2">
-                <ErrorBoundary>
+                <div className="px-2">
                     {activeTab === 'posts' && (
-                        <Posts />
+                        <ErrorBoundary>
+                            <Posts />
+                        </ErrorBoundary>
                     )}
-                </ErrorBoundary>
 
-                <ErrorBoundary>
                     {activeTab === 'settings' && (
-                        <Settings />
+                        <ErrorBoundary>
+                            <Settings />
+                        </ErrorBoundary>
                     )}
-                </ErrorBoundary>
+                </div>
             </div>
-
-        </div>
+        </DarkModeProvider>
     );
 }
 
