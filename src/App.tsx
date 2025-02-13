@@ -16,7 +16,7 @@ function App() {
             <div className="w-[640px] flex flex-col gap-4 p-4">
                 <Header />
 
-                <div className="flex flex-row gap-4 bg-gray-100 dark:bg-gray-700 p-2 rounded-full justify-between items-centers">
+                <div className="flex flex-row gap-4 bg-gray-100 transition-colors  dark:bg-gray-700 p-2 rounded-full justify-between items-centers">
                     <div className="flex flex-row gap-4">
                         <Pill active={activeTab === 'posts'} onClick={() => setActiveTab('posts')}>Posts</Pill>
                         <Pill active={activeTab === 'settings'} onClick={() => setActiveTab('settings')}>Settings</Pill>
