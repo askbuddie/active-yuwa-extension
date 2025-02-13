@@ -36,12 +36,12 @@ export const Settings: React.FC = () => {
 
                         <div className="pb-4 border-b border-gray-300 dark:border-gray-700">
                             <h2 className="text-lg font-roboto font-semibold">Post Content Selectors</h2>
-                            <p className="text-xs text-gray-500">Following fields determine the CSS selectors for the post content. The selectors must be relative to the post html element</p>
+                            <p className="text-xs text-gray-500">Following fields determine the CSS selector or regular expressions for the post content. The selectors must be relative to the post html element</p>
                         </div>
 
                         <Input id="authorSelector"
                             label="Author Selector"
-                            hint="CSS selector for the author name"
+                            hint="CSS selector or regular expression for the author name"
                             value={settings.authorSelector}
                             onChange={value => setSettings({ authorSelector: value })} />
 
@@ -55,7 +55,7 @@ export const Settings: React.FC = () => {
 
                         <Input id="contentSelector"
                             label="Content Selector"
-                            hint="CSS selector for the post content"
+                            hint="CSS selector or regular expression for the post content"
                             value={settings.contentSelector}
                             onChange={value => setSettings({ contentSelector: value })} />
 
@@ -68,7 +68,7 @@ export const Settings: React.FC = () => {
 
                         <Input id="timestampSelector"
                             label="Timestamp Selector"
-                            hint="CSS selector for the post timestamp"
+                            hint="CSS selector or regular expression for the post timestamp"
                             value={settings.timestampSelector}
                             onChange={value => setSettings({ timestampSelector: value })} />
 
@@ -82,7 +82,7 @@ export const Settings: React.FC = () => {
 
                         <Input id="reactionsSelector"
                             label="Reactions Selector"
-                            hint="CSS selector for the post reactions"
+                            hint="CSS selector or regular expression for the post reactions"
                             value={settings.reactionsSelector}
                             onChange={value => setSettings({ reactionsSelector: value })} />
 
@@ -95,7 +95,7 @@ export const Settings: React.FC = () => {
 
                         <Input id="commentsSelector"
                             label="Comments Selector"
-                            hint="CSS selector for the post comments"
+                            hint="CSS selector or regular expression for the post comments"
                             value={settings.commentsSelector}
                             onChange={value => setSettings({ commentsSelector: value })} />
 
@@ -108,7 +108,7 @@ export const Settings: React.FC = () => {
 
                         <Input id="sharesSelector"
                             label="Shares Selector"
-                            hint="CSS selector for the post shares"
+                            hint="CSS selector or regular expression for the post shares"
                             value={settings.sharesSelector}
                             onChange={value => setSettings({ sharesSelector: value })} />
 
@@ -121,7 +121,7 @@ export const Settings: React.FC = () => {
 
                         <Input id="urlSelector"
                             label="URL Selector"
-                            hint="CSS selector for the post URL"
+                            hint="CSS selector or regular expression for the post URL"
                             value={settings.urlSelector}
                             onChange={value => setSettings({ urlSelector: value })} />
 
