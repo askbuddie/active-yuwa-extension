@@ -17,7 +17,7 @@ export const createReactiveStorage = <T>(name: string, initialValue: T): Reactiv
     const setter = (data: Partial<T>): void => {
         const newData = { ...value, ...data };
 
-        chrome.storage.local.set({ [name]: data }).then(() => {
+        chrome.storage.local.set({ [name]: newData }).then(() => {
             setValue(newData);
         });
     }
