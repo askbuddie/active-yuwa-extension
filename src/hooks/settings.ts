@@ -21,39 +21,36 @@ export type Settings = {
     commentsSelector: string;
     commentsStrategy: Strategy;
 
-    sharesSelector: string;
-    sharesStrategy: Strategy;
-
-    urlSelector: string;
-    urlStrategy: Strategy;
-
     maxReactions: number;
     maxComments: number;
-    maxShares: number;
+
+    boostComment: string;
 };
 
 export const defaultSettings: Settings = {
-    postSelector: '[role="article"]',
-    authorSelector: "",
+    postSelector: '[role="article"][aria-labelledby]',
+    authorSelector: '[data-ad-rendering-role="profile_name"]',
     authorStrategy: 'query',
-    contentSelector: "",
+    contentSelector: '[data-ad-rendering-role="story_message"]',
     contentStrategy: 'query',
-    timestampSelector: "",
-    timestampStrategy: 'query',
-    reactionsSelector: "",
+    timestampSelector: '/aria-label="(\d+[dmyh])"/g',
+    timestampStrategy: 'regex',
+    reactionsSelector: 'div[data-visualcompletion="ignore-dynamic"] span div span[aria-hidden=true]',
     reactionsStrategy: 'query',
-    commentsSelector: "",
+    commentsSelector: 'div[data-visualcompletion="ignore-dynamic"] div div div span div div div span span',
     commentsStrategy: 'query',
-    sharesSelector: "",
-    sharesStrategy: 'query',
-    urlSelector: "",
-    urlStrategy: 'query',
-    maxReactions: 0,
-    maxComments: 0,
-    maxShares: 0
+    maxReactions: 5,
+    maxComments: 5,
+    boostComment: '🚀 boosting the reach #boost'
 };
 
 
 export const useSettings = () => {
-    return createReactiveStorage<Settings>('settings', defaultSettings);
+    const [settings, setSettings] = createReactiveStorage<Settings>('settings', defaultSettings);
+
+    const setter = (data: Partial<Settings>): void => {
+        setSettings({ ...settings, ...data });
+    };
+
+    return [settings, setter] as const;
 };

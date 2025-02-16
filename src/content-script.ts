@@ -1,44 +1,116 @@
 import { Settings } from './hooks/settings';
-import { fetchPosts } from './utils/scraper';
+import { fetchPosts, Post } from './utils/scraper';
 
-type Message<T> = {
-    type: string;
-    data: T;
-}
 
-const onFetchPosts = (payload: Message<Settings>, sendResponse: (data?: any) => void) => {
+const askbuddie_sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    console.log('FETCH_POSTS message received', payload);
+// @ts-ignore
+const commentPost = async (post: Post, settings: Settings) => {
 
-    const settings: Settings = payload.data;
-    const posts = fetchPosts(document, settings);
+    console.log("Commenting on post:", post);
+    const { article } = post;
+    const { boostComment } = settings;
 
-    sendResponse({
-        type: 'POSTS',
-        data: posts
+
+    let enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        code: 'Enter',
+        keyCode: 13,
+        which: 13,
+        bubbles: true,
+        cancelable: true,
     });
+
+    const commentButton: HTMLDivElement | null = article.querySelector('div[role="textbox"][contenteditable="true"][data-lexical-editor="true"]');
+    if (!commentButton) {
+        console.error("Could not find the comment box for post:", article);
+        return;
+    }
+
+    commentButton.focus();
+    document.execCommand('selecctAll', false);
+    document.execCommand('insertText', false, boostComment);
+    commentButton.dispatchEvent(enterEvent);
 }
 
-chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
-    switch (message.type) {
-        case 'FETCH_POSTS':
-            onFetchPosts(message, sendResponse);
-            break;
-        default:
+const handleMessages = (message: any, _: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+
+    if (message.action === 'stop') {
+        // @ts-ignore
+        window.ASK_BUDDIE_RUNNING = false;
+        return sendResponse({
+            running: false,
+        });
     }
-});
 
-const observer = new MutationObserver(() => {
+    if (message.action === 'status') {
+        return sendResponse({
+            // @ts-ignore
+            running: window.ASK_BUDDIE_RUNNING,
+        });
+    }
 
-    console.log('DOM changed, sending DOM_CHANGED message');
+    if (message.action === 'start') {
+        // @ts-ignore
+        window.ASK_BUDDIE_RUNNING = true;
+        return sendResponse({
+            running: true,
+        });
+    }
 
-    chrome.runtime.sendMessage({
-        type: 'DOM_CHANGED'
-    })
-});
+    // killswitch for the extension
+    // @ts-ignore
+    if (!window.ASK_BUDDIE_RUNNING) {
+        return sendResponse({
+            running: false,
+        });
+    }
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
+    if (message.action === 'comment-posts') {
 
+        const { maxReactions, maxComments, boostComment }: Settings = message.settings;
+
+        if (boostComment.length === 0) {
+            return sendResponse({
+                error: "Boost comment is empty",
+                running: false,
+            });
+        }
+
+        const posts = fetchPosts(document, message.settings);
+
+        const filteredPosts = posts
+            .filter(({ author, reactions, comments }: Post) => {
+                return author.length > 0 && reactions <= maxReactions && comments <= maxComments;
+            });
+
+
+
+        filteredPosts.map(async (post) => {
+            const { article } = post;
+            if (!article) {
+                console.error("Could not find the article for post:", post);
+                return;
+            }
+
+            // comment on the post 
+            await commentPost(post, message.settings);
+
+            // sleep for 2 seconds to avoid spamming
+            await askbuddie_sleep(2000);
+
+
+        });
+
+        // scroll to the end to load more posts
+        window.scrollTo(0, document.body.scrollHeight);
+
+
+        return sendResponse({
+            posts: filteredPosts,
+            running: true,
+        });
+    }
+};
+
+chrome.runtime.onMessage.addListener(handleMessages);

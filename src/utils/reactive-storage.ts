@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type ReactiveStorage<T> = [T, (val: Partial<T>) => void];
+type ReactiveStorage<T> = [T, (val: T) => void];
 
 export const createReactiveStorage = <T>(name: string, initialValue: T): ReactiveStorage<T> => {
 
@@ -14,13 +14,21 @@ export const createReactiveStorage = <T>(name: string, initialValue: T): Reactiv
         })
     }, []);
 
-    const setter = (data: Partial<T>): void => {
-        const newData = { ...value, ...data };
+    chrome.storage.local.onChanged.addListener(changes => {
+        if (changes[name] && changes[name].newValue !== value) {
+            setValue(changes[name].newValue);
+        }
+    });
 
-        chrome.storage.local.set({ [name]: newData }).then(() => {
-            setValue(newData);
+    const setter = (data: T): void => {
+
+        setValue(data);
+
+        chrome.storage.local.set({ [name]: data }).catch((e) => {
+            console.log(e);
         });
     }
 
     return [value, setter];
 }
+

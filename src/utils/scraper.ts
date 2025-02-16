@@ -13,8 +13,7 @@ export type Post = {
     timestamp: string;
     reactions: number;
     comments: number;
-    shares: number;
-    url: string;
+    article: HTMLDivElement;
 }
 
 export const fetchPosts = (document: Document, settings: Settings): Post[] => {
@@ -31,7 +30,7 @@ type ExtractionStrategy = {
     regex: (article: HTMLDivElement, selector: string) => any;
 }
 
-type Fields = 'author' | 'content' | 'timestamp' | 'reactions' | 'comments' | 'shares' | 'url';
+type Fields = 'author' | 'content' | 'timestamp' | 'reactions' | 'comments' | 'url';
 
 const strategies: Record<Fields, ExtractionStrategy> = {
     author: {
@@ -74,14 +73,6 @@ const strategies: Record<Fields, ExtractionStrategy> = {
             return match ? asNumber(match[1]) : 0;
         }
     },
-    shares: {
-        query: (article: HTMLDivElement, selector: string) => asNumber(article.querySelector(selector)?.textContent),
-        regex: (article: HTMLDivElement, selector: string) => {
-            const regex = new RegExp(selector);
-            const match = regex.exec(article.innerHTML);
-            return match ? asNumber(match[1]) : 0;
-        }
-    },
     url: {
         query: (article: HTMLDivElement, selector: string) => asString(article.querySelector(selector)?.getAttribute('href')),
         regex: (article: HTMLDivElement, selector: string) => {
@@ -100,16 +91,12 @@ export const extractPost = (article: HTMLDivElement, settings: Settings): Post =
         timestampSelector,
         reactionsSelector,
         commentsSelector,
-        sharesSelector,
-        urlSelector,
 
         authorStrategy,
         contentStrategy,
         timestampStrategy,
         reactionsStrategy,
         commentsStrategy,
-        sharesStrategy,
-        urlStrategy
     } = settings;
 
     const extract = (strategy: Strategy, selector: string, field: Fields) => {
@@ -123,6 +110,8 @@ export const extractPost = (article: HTMLDivElement, settings: Settings): Post =
         if (strategy === 'regex') {
             return regex(article, selector);
         }
+
+        throw new Error(`Unknown strategy: ${strategy}`);
     }
 
     return {
@@ -131,7 +120,6 @@ export const extractPost = (article: HTMLDivElement, settings: Settings): Post =
         timestamp: extract(timestampStrategy, timestampSelector, 'timestamp'),
         reactions: extract(reactionsStrategy, reactionsSelector, 'reactions'),
         comments: extract(commentsStrategy, commentsSelector, 'comments'),
-        shares: extract(sharesStrategy, sharesSelector, 'shares'),
-        url: extract(urlStrategy, urlSelector, 'url')
+        article
     }
 }

@@ -1,14 +1,14 @@
 import { defaultSettings, Strategy, useSettings } from "../hooks/settings";
 import { Pill } from "./pill";
-import { usePosts } from "../hooks/posts";
 import { Input } from "./forms/input";
 import { RadioGroup } from "./forms/radio-group";
 import { ErrorBoundary } from "./error-boundary";
+import { Accordion } from "./accordion";
+import { Textarea } from "./forms/textarea";
 
 export const Settings: React.FC = () => {
 
     const [settings, setSettings] = useSettings();
-    const [, setPosts] = usePosts();
 
 
     const strategies = [
@@ -18,27 +18,17 @@ export const Settings: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
                 <ErrorBoundary>
-                    <div className="flex flex-col gap-4">
-                        <div className="pb-4 border-b border-gray-300 dark:border-gray-700">
-                            <h2 className="text-lg font-roboto font-semibold">Post Selector</h2>
-                        </div>
-
+                    <Accordion heading="Post Selector Settings" open subheading="CSS Selector for finding posts inside the document">
                         <Input id="postSelector"
                             label="Post Selector"
                             hint="CSS selector for the post element"
                             value={settings.postSelector}
                             onChange={value => setSettings({ postSelector: value })} />
-                    </div>
+                    </Accordion>
 
-                    <div className="flex flex-col gap-4">
-
-                        <div className="pb-4 border-b border-gray-300 dark:border-gray-700">
-                            <h2 className="text-lg font-roboto font-semibold">Post Content Selectors</h2>
-                            <p className="text-xs text-gray-500">Following fields determine the CSS selector or regular expressions for the post content. The selectors must be relative to the post html element</p>
-                        </div>
-
+                    <Accordion heading="Post Content Selector Settings" subheading="Settings for CSS/Regex selectors for extracting data from a post dom element">
                         <Input id="authorSelector"
                             label="Author Selector"
                             hint="CSS selector or regular expression for the author name"
@@ -105,71 +95,36 @@ export const Settings: React.FC = () => {
                             selected={settings.commentsStrategy}
                             label="Comments Selection Strategy"
                             onChange={(value: string) => setSettings({ commentsStrategy: value as Strategy })} />
+                    </Accordion>
 
-                        <Input id="sharesSelector"
-                            label="Shares Selector"
-                            hint="CSS selector or regular expression for the post shares"
-                            value={settings.sharesSelector}
-                            onChange={value => setSettings({ sharesSelector: value })} />
+                    <Accordion heading="Post Thresholds Settings" subheading="Crietria for selecting posts to be commented on">
 
-                        <RadioGroup
-                            hint="Determines how to extract the post shares"
-                            options={strategies.map(s => ({ id: `shares${s.value}`, label: s.label, value: s.value }))}
-                            selected={settings.sharesStrategy}
-                            label="Shares Selection Strategy"
-                            onChange={(value: string) => setSettings({ sharesStrategy: value as Strategy })} />
-
-                        <Input id="urlSelector"
-                            label="URL Selector"
-                            hint="CSS selector or regular expression for the post URL"
-                            value={settings.urlSelector}
-                            onChange={value => setSettings({ urlSelector: value })} />
-
-                        <RadioGroup
-                            hint="Determines how to extract the post URL"
-                            options={strategies.map(s => ({ id: `url${s.value}`, label: s.label, value: s.value }))}
-                            selected={settings.urlStrategy}
-                            label="URL Selection Strategy"
-                            onChange={(value: string) => setSettings({ urlStrategy: value as Strategy })} />
-                    </div>
-
-
-                    <div className="flex flex-col gap-4">
-                        <div className="pb-4 border-b border-gray-300 dark:border-gray-700">
-                            <h2 className="text-lg font-roboto font-semibold">Post Thresholds</h2>
-
-                            <p className="text-xs text-gray-500">Following fields determine the criteria for displaying a post</p>
-                        </div>
 
                         <Input id="maxReactions"
-                            label="Minimum Reactions"
-                            hint="Posts with reactions below this threshold will not be displayed"
+                            label="Maximum Reactions"
+                            hint="Posts with reactions above this threshold will not be commented on"
                             value={settings.maxReactions.toString()}
                             onChange={value => setSettings({ maxReactions: parseInt(value) })} />
 
                         <Input id="maxComments"
-                            label="Minimum Comments"
-                            hint="Posts with comments below this threshold will not be displayed"
+                            label="Maximum Comments"
+                            hint="Posts with comments above this threshold will not be commented on"
                             value={settings.maxComments.toString()}
                             onChange={value => setSettings({ maxComments: parseInt(value) })} />
 
-                        <Input id="maxShares"
-                            label="Minimum Shares"
-                            hint="Posts with shares below this threshold will not be displayed"
-                            value={settings.maxShares.toString()}
-                            onChange={value => setSettings({ maxShares: parseInt(value) })} />
+                    </Accordion>
 
-                    </div>
+                    <Accordion heading="Post Boosting Settings" subheading="Text to be added to the post content">
+                        <Textarea id="boostComment"
+                            label="Boost Comment"
+                            hint="Text to be added to the post content"
+                            value={settings.boostComment}
+                            onChange={value => setSettings({ boostComment: value })} />
+                    </Accordion>
 
                 </ErrorBoundary>
-                <div className="flex flex-col gap-4 mt-8">
-                    <Pill active={true} onClick={() => { setSettings(defaultSettings) }}>Reset to Default Settings</Pill>
-                </div>
 
-                <div className="flex flex-col gap-4 mt-4">
-                    <Pill active={false} onClick={() => { setPosts([]); }}>Clear Stored Posts</Pill>
-                </div>
-
+                <Pill active={true} onClick={() => { setSettings(defaultSettings) }}>Reset to Default Settings</Pill>
             </div>
         </div>
     )
